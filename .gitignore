@@ -7,3 +7,4 @@ mlflow/
 .DS_Store
 data/raw/
 .prefect/
+data/processed/
