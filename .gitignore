@@ -8,3 +8,4 @@ mlflow/
 data/raw/
 .prefect/
 data/processed/
+forecast/models/
