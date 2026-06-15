@@ -59,7 +59,7 @@ def generate_scenarios(
         # norm.ppf converts a probability to a z-score
         # then we apply the lognormal inverse CDF: exp(mu + sigma * z)
         z_scores = norm.ppf(lhs_samples)
-        scenario_values = np.exp(mu + sigma * z_scores)
+        scenario_values = np.clip(np.exp(mu + sigma * z_scores), 0.0, 1.0)
 
         for i, value in enumerate(scenario_values):
             scenario_rows.append({
