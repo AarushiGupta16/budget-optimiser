@@ -40,12 +40,8 @@ def generate_scenarios(
     campaigns = predictions["campaign"].unique()
     print(f"Generating {n_scenarios} scenarios for {len(campaigns)} campaigns ...")
 
-    # Latin Hypercube sampler — one sample per scenario
-    sampler = LatinHypercube(d=1)
-    # Generate n_scenarios samples in [0, 1] — these are probabilities
-    lhs_samples = sampler.random(n=n_scenarios).flatten()
-
     scenario_rows = []
+    rng = np.random.default_rng(seed=42)
 
     for campaign in campaigns:
         row = predictions[predictions["campaign"] == campaign].iloc[0]
@@ -54,6 +50,11 @@ def generate_scenarios(
         q90 = row["q90"]
 
         mu, sigma = fit_lognormal(q10, q50, q90)
+
+        # Generate independent LHS samples PER CAMPAIGN so that
+        # different campaigns don't all have their worst/best day on the same scenario
+        sampler = LatinHypercube(d=1, seed=rng)
+        lhs_samples = sampler.random(n=n_scenarios).flatten()
 
         # Convert LHS probability samples to actual conversion rate values
         # norm.ppf converts a probability to a z-score
